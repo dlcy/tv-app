@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">电视播放器</string>
+
+    <!-- MainActivity Toasts -->
+    <string name="ntp_time_synced">NTP时间已同步: %1$s</string>
+    <string name="ntp_time_sync_failed">从 %1$s 同步NTP时间失败</string>
+    <string name="ntp_server_updated">NTP服务器已更新为 %1$s</string>
+    <string name="ntp_server_empty">NTP服务器地址不能为空。</string>
+    <string name="failed_to_load_channels">加载频道列表失败。</string>
+    <string name="failed_to_save_channels">保存频道列表失败。</string>
+    <string name="file_is_empty">文件为空。</string>
+    <string name="no_valid_channels_found">在所选文件中未找到有效频道。</string>
+    <string name="failed_to_read_or_parse_file">读取或解析文件失败。</string>
+    <string name="channel_list_empty">频道列表为空，请导入频道。</string>
+    <string name="all_channels_cleared">所有频道已被清空。</string>
+    <string name="channel_not_found">找不到频道 %1$d</string>
+
+    <!-- NTP Dialog -->
+    <string name="ntp_server_settings">NTP服务器设置</string>
+    <string name="save">保存</string>
+    <string name="cancel">取消</string>
+
+    <!-- Menu Items -->
+    <string name="action_import_channels">导入频道</string>
+    <string name="action_clear_channels">清空所有频道</string>
+    <string name="action_ntp_settings">NTP设置</string>
+    <string name="action_server_settings">播放服务器</string>
+    <string name="action_hide_menu">隐藏菜单</string>
+</resources>

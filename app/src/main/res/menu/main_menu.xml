@@ -1,0 +1,30 @@
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_import_channels"
+        android:title="@string/action_import_channels"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_clear_channels"
+        android:title="@string/action_clear_channels"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_ntp_settings"
+        android:title="@string/action_ntp_settings"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_server_settings"
+        android:title="@string/action_server_settings"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_hide_menu"
+        android:title="@string/action_hide_menu"
+        app:showAsAction="never" />
+
+</menu>

@@ -1,0 +1,109 @@
+ # ==========================================================================
+ # GitHub Actions: Android CI/CD Workflow for TV App
+ #
+ # 功能:
+ # 1. 触发构建: 在推送到 `main` 分支、发起PR到 `main` 分支，或手动触发时运行。
+ # 2. 缓存依赖: 缓存Gradle依赖，大幅提升后续构建速度。
+ # 3. 构建Debug APK: 对 `main` 分支的常规提交构建Debug版本的APK。
+ # 4. 构建Release APK: 当你创建一个 'v*.*.*' 格式的Git标签时，自动构建签名的Release APK。
+ # 5. 安全签名: 通过GitHub Secrets安全地管理和使用签名密钥。
+ # 6. 上传产物: 将构建好的APK作为GitHub Artifact上传，便于下载和测试。
+ # ==========================================================================
+​
+ name: Build Android APK
+​
+ on:
+   # 在代码推送到 'main' 分支时触发
+   push:
+     branches: [ "main" ]
+     # 当创建一个 'v*.*.*' (如 v1.0.0, v1.2.3) 格式的标签时也触发
+     tags:
+       - 'v*.*.*'
+​
+   # 在向 'main' 分支发起 Pull Request 时触发
+   pull_request:
+     branches: [ "main" ]
+​
+   # 允许在GitHub Actions界面手动触发此工作流
+   workflow_dispatch:
+​
+ jobs:
+   build:
+     # 指定运行环境为最新的Ubuntu系统
+     runs-on: ubuntu-latest
+​
+     # 设置此job下所有run步骤的默认工作目录
+     defaults:
+       run:
+         working-directory: ./app
+​
+     steps:
+       # 步骤 1: 检出你的项目代码
+       - name: Checkout source
+         uses: actions/checkout@v4
+​
+       # 步骤 2: 设置JDK 17环境
+       - name: Set up JDK 17
+         uses: actions/setup-java@v4
+         with:
+           distribution: 'temurin'
+           java-version: '17'
+​
+       # 步骤 3: 配置Gradle依赖缓存，这是加速构建的关键
+       - name: Cache Gradle dependencies
+         uses: actions/cache@v4
+         with:
+           # 缓存的路径，包括Gradle的各种缓存和wrapper
+           path: |
+             ~/.gradle/caches
+             ~/.gradle/wrapper
+           # 缓存的唯一键，当 build.gradle 或 gradle.properties 文件变化时，缓存会失效并重建
+           key: ${{ runner.os }}-gradle-${{ hashFiles('app/**/build.gradle*', 'app/gradle/wrapper/gradle-wrapper.properties') }}
+           restore-keys: |
+             ${{ runner.os }}-gradle-
+​
+       # 步骤 4: 为Gradle Wrapper赋予执行权限
+       - name: Grant execute permission for gradlew
+         run: chmod +x ./gradlew
+​
+       # 步骤 5: 如果是打标签的发布构建，则解码并保存签名密钥
+       # 这个步骤仅在 github.ref 是一个tag时才会执行
+       - name: Decode and Save Keystore
+         if: startsWith(github.ref, 'refs/tags/')
+         # 你需要提前在GitHub仓库的 Secrets 中设置 SIGNING_KEYSTORE_BASE64, SIGNING_KEY_ALIAS 等变量
+         run: |
+           echo "${{ secrets.SIGNING_KEYSTORE_BASE64 }}" | base64 --decode > ${{ secrets.SIGNING_KEY_ALIAS }}.jks
+           echo "SIGNING_KEY_ALIAS=${{ secrets.SIGNING_KEY_ALIAS }}" >> local.properties
+           echo "SIGNING_KEY_PASSWORD=${{ secrets.SIGNING_KEY_PASSWORD }}" >> local.properties
+           echo "SIGNING_STORE_PASSWORD=${{ secrets.SIGNING_STORE_PASSWORD }}" >> local.properties
+           echo "SIGNING_KEYSTORE_PATH=${{ secrets.SIGNING_KEY_ALIAS }}.jks" >> local.properties
+​
+       # 步骤 6: 执行构建
+       - name: Build APK
+         run: |
+           # 如果是打标签的发布构建，则执行 assembleRelease
+           if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
+             ./gradlew assembleRelease
+           # 否则，执行 assembleDebug
+           else
+             ./gradlew assembleDebug
+           fi
+​
+       # 步骤 7: 上传构建好的APK文件作为产物
+       - name: Upload APK Artifact
+         uses: actions/upload-artifact@v4
+         with:
+           # 如果是打标签的发布构建，上传Release APK
+           if-no-files-found: error
+           name: tv-app-release-${{ github.ref_name }}.apk
+           path: app/build/outputs/apk/release/app-release.apk
+           if: startsWith(github.ref, 'refs/tags/')
+​
+       - name: Upload Debug APK Artifact
+         uses: actions/upload-artifact@v4
+         with:
+           # 否则，上传Debug APK
+           if-no-files-found: error
+           name: tv-app-debug.apk
+           path: app/build/outputs/apk/debug/app-debug1.apk
+           if: "!startsWith(github.ref, 'refs/tags/')"

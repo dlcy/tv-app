@@ -104,6 +104,6 @@
          with:
            # 否则，上传Debug APK
            if-no-files-found: error
-           name: tv-app-debug.apk
+           name: tv-app-debug1.apk
            path: app/build/outputs/apk/debug/app-debug1.apk
            if: "!startsWith(github.ref, 'refs/tags/')"

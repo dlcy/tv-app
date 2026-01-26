@@ -32,6 +32,7 @@
 #### 频道地址格式示例
 ```text
 湖南都市,"http://{serverip}/000000002000/201500000151/index.m3u8?starttime={timestamp}"
+湖南都市2,"http://111.222.333.444:5410/000000002000/201500000151/index.m3u8?starttime={starttime}"
 ```
 #### 参数说明
 * `{serverip}`
@@ -55,7 +56,10 @@
 * 使用 IPTV 内网组播地址
 * 受网络限制，**最多同时播放 2 路**
 * App 内部在换台时会强制释放播放器，避免被 IPTV 网关限流
----
+```text
+湖南都市,"http://192.168.99.1:7088/udp/239.76.253.151:9000"
+湖南都市2,"rtp://239.76.253.151:9000"  这个需要进行udp穿透和route路由表
+```
 
 ## NTP 自动校时
 * 应用内置 **NTP 时间同步机制**
@@ -92,6 +96,17 @@ Dalvik/1.6.0 (Linux; U; Android 4.4.2; IPTV Build/KOT49H)
 * NTP 服务器地址
 * User-Agent
 * 频道列表
+* route路由表（路由器上设置，单线复用，最简单的设置）
+  route add 224.0.0.0/4 dev pppoe-iptv
+  route add 10.0.0.0/8 dev pppoe-iptv
+  route add 218.76.205.0/24 dev pppoe-iptv
+  route add 124.232.135.0/24 dev pppoe-iptv
+  route add 124.232.231.0/24 dev pppoe-iptv
+  route add 124.232.232.0/24 dev pppoe-iptv
+  route add 222.246.132.0/24 dev pppoe-iptv
+  route add 222.246.129.0/24 dev pppoe-iptv
+  route add 204.80.128.0/24 dev pppoe-iptv
+  route add 124.232.139.0/24 dev pppoe-iptv
 ---
 
 ## 相关项目（PC 验证工具）

@@ -22,8 +22,8 @@
 使用前必须满足以下条件之一：
 1. 已通过路由器或上级设备完成 **IPTV 专线 PPPoE 拨号**
 2. Android 设备可直接访问 **湖南电信 IPTV 内网服务器**
-3. 可访问 IPTV 播放服务器（如 `10.x.x.x` / `172.16.x.x` 等内网地址）
-未满足条件时，应用将拒绝播放。
+3. 播放前检查可访问（ping）的服务器（如 `10.x.x.x` / `172.16.x.x` 等内网地址）
+未满足条件时，应用将拒绝播放。app/src/main/java/com/example/tvplayer/player/NetworkGuard.kt里面定义播放器检查（ping）的ip
 ---
 
 ## 播放原理说明

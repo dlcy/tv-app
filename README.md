@@ -32,10 +32,12 @@
 本质上，该单播流是一个 基于时间窗口的准实时回放流：
 播放画面通常比当前时间慢几秒
 每次换台都需要重新计算时间参数
+原来不用时间参数也可以。。http://{serverip}/000000002000/201500000151/index.m3u8?starttime=&ispcode=2&zte_offset=0
 #### 频道地址格式示例
 ```text
 湖南都市,"http://{serverip}/000000002000/201500000151/index.m3u8?starttime={timestamp}"
 湖南都市2,"http://111.222.333.444:5410/000000002000/201500000151/index.m3u8?starttime={starttime}"
+测试1,"http://{serverip}/000000002000/201500000151/index.m3u8?starttime=&ispcode=2&zte_offset=0"
 ```
 #### 参数说明
 * `{serverip}`
